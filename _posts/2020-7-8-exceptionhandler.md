@@ -5,8 +5,7 @@ title:  SpringBoot ExceptionHandling
 springboot에서 오류발생시 처리 하는 방법을 알아본다.  
 
 java exception hierarchy
-
-![https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7c48f813-6c5e-4a60-b86e-68bdd6b2b80d/exception-hierarchy-in-java.png](https://s3-us-west-2.amazonaws.com/secure.notion-static.com/7c48f813-6c5e-4a60-b86e-68bdd6b2b80d/exception-hierarchy-in-java.png)
+<img class="img-fluid" src="https://ap-northeast-2-02850030-view.menlosecurity.com/c/0/i/aHR0cHM6Ly93d3cuYmVuY2hyZXNvdXJjZXMubmV0L3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDE3LzAyL2V4Y2VwdGlvbi1oaWVyYXJjaHktaW4tamF2YS5wbmc~" alt="exception">
 
 ### BasicErrorControll
 
