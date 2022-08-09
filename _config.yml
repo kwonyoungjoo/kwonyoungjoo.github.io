@@ -1,0 +1,15 @@
+title:              Sami Blog
+email:              justdoit1978@gmail.com
+description:        A Blog Theme by Start Bootstrap
+author:             Start Bootstrap
+baseurl:            "/kwonyoungjoo.github.io"
+url:                "https://startbootstrap.github.io"
+
+# Build settings
+markdown:           kramdown
+paginate:           5
+paginate_path:      "/posts/page:num/"
+plugins:
+  - jekyll-feed
+  - jekyll-paginate
+  - jekyll-sitemap ## Uncomment this line to silently generate a sitemaps.org compliant sitemap for your Jekyll site

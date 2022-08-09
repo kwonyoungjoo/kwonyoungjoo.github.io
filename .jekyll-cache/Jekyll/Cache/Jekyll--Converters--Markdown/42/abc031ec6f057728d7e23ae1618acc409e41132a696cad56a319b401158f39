@@ -1,0 +1,91 @@
+I"�,<p>springbatch를 이용해서 데이터를 처리할때 데이터 사이즈가 큰경우 task 단위가 아닌 chunk를 이용해서 
+데이터를 작은 사이즈로 read-process-write 를 반복적으로 처리에 견고하고 재처리 가능한 시스템으로 만들어 본다.</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Bean</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="no">JOB_NAME</span> <span class="o">+</span> <span class="s">"_step"</span><span class="o">)</span>
+<span class="nd">@JobScope</span>
+<span class="kd">public</span> <span class="nc">Step</span> <span class="nf">step</span><span class="o">()</span> <span class="o">{</span>
+    <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"step"</span><span class="o">);</span>
+    <span class="k">return</span> <span class="n">stepBuilderFactory</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="no">JOB_NAME</span> <span class="o">+</span> <span class="s">"Step"</span><span class="o">)</span>
+        <span class="o">.&lt;</span><span class="nc">InputDto</span><span class="o">,</span> <span class="nc">OutputDto</span><span class="o">&gt;</span><span class="n">chunk</span><span class="o">(</span><span class="no">CHUNK_SIZE</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">reader</span><span class="o">(</span><span class="n">multiReader</span><span class="o">())</span>
+        <span class="o">.</span><span class="na">processor</span><span class="o">(</span><span class="n">processor</span><span class="o">())</span>
+        <span class="o">.</span><span class="na">writer</span><span class="o">(</span><span class="n">writer</span><span class="o">())</span>
+        <span class="o">.</span><span class="na">faultTolerant</span><span class="o">()</span>
+        <span class="o">.</span><span class="na">skip</span><span class="o">(</span><span class="nc">IllegalStateException</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">skipLimit</span><span class="o">(</span><span class="mi">3</span><span class="o">)</span>
+        <span class="o">.</span><span class="na">listener</span><span class="o">(</span><span class="k">new</span> <span class="nc">NewsSkipListener</span><span class="o">())</span>
+        <span class="o">.</span><span class="na">listener</span><span class="o">(</span><span class="k">new</span> <span class="nc">NewsChunkListener</span><span class="o">())</span>
+        <span class="o">.</span><span class="na">exceptionHandler</span><span class="o">((</span><span class="n">context</span><span class="o">,</span> <span class="n">throwable</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="o">{</span>
+            <span class="c1">// send alarm or logging </span>
+    <span class="o">})</span>
+    <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+
+<span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">// 멀티파일리더 </span>
+    <span class="nd">@Bean</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="no">JOB_NAME</span> <span class="o">+</span> <span class="s">"_multi_reader"</span><span class="o">)</span>
+    <span class="nd">@StepScope</span>
+    <span class="kd">public</span> <span class="nc">MultiResourceItemReader</span><span class="o">&lt;</span><span class="nc">InputDto</span><span class="o">&gt;</span> <span class="nf">multiReader</span><span class="o">()</span> <span class="o">{</span>
+
+        <span class="nc">MultiResourceItemReader</span><span class="o">&lt;</span><span class="nc">InputDto</span><span class="o">&gt;</span> <span class="n">multiReader</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MultiResourceItemReader</span><span class="o">&lt;&gt;();</span>
+        <span class="n">multiReader</span><span class="o">.</span><span class="na">setResources</span><span class="o">(</span><span class="n">inputResources</span><span class="o">);</span>
+        <span class="n">multiReader</span><span class="o">.</span><span class="na">setDelegate</span><span class="o">(</span><span class="n">reader</span><span class="o">());</span>
+        <span class="k">return</span> <span class="n">multiReader</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nd">@Bean</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="no">JOB_NAME</span> <span class="o">+</span> <span class="s">"_reader"</span><span class="o">)</span>
+    <span class="nd">@StepScope</span>
+    <span class="kd">public</span> <span class="nc">JsonItemReader</span><span class="o">&lt;</span><span class="nc">InputDto</span><span class="o">&gt;</span> <span class="nf">reader</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nc">JsonItemReaderBuilder</span><span class="o">&lt;</span><span class="nc">InputDto</span><span class="o">&gt;()</span>
+            <span class="o">.</span><span class="na">jsonObjectReader</span><span class="o">(</span><span class="k">new</span> <span class="nc">JacksonJsonObjectReader</span><span class="o">&lt;&gt;(</span><span class="nc">InputDto</span><span class="o">.</span><span class="na">class</span><span class="o">))</span>
+            <span class="o">.</span><span class="na">name</span><span class="o">(</span><span class="s">"reader"</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nd">@Bean</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="no">JOB_NAME</span> <span class="o">+</span> <span class="s">"_processor"</span><span class="o">)</span>
+    <span class="nd">@StepScope</span>
+    <span class="kd">public</span> <span class="nc">ItemProcessor</span><span class="o">&lt;</span><span class="nc">InputDto</span><span class="o">,</span> <span class="nc">OutputDto</span><span class="o">&gt;</span> <span class="nf">processor</span><span class="o">(){</span>
+    <span class="k">return</span> <span class="n">dto</span><span class="o">-&gt;{</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"process item "</span><span class="o">);</span>
+        <span class="k">return</span> <span class="nc">OutputDto</span><span class="o">.</span><span class="na">builder</span><span class="o">().</span><span class="na">buil</span><span class="o">();</span>
+        <span class="o">};</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nd">@Bean</span><span class="o">(</span><span class="n">name</span> <span class="o">=</span> <span class="no">JOB_NAME</span> <span class="o">+</span> <span class="s">"_writer"</span><span class="o">)</span>
+    <span class="nd">@StepScope</span>
+    <span class="kd">public</span> <span class="nc">JpaItemWriter</span><span class="o">&lt;</span><span class="nc">OutputDto</span><span class="o">&gt;</span> <span class="nf">writer</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nc">JpaItemWriterBuilder</span><span class="o">&lt;</span><span class="nc">OutputDto</span><span class="o">&gt;()</span>
+            <span class="o">.</span><span class="na">entityManagerFactory</span><span class="o">(</span><span class="n">entityManagerFactory</span><span class="o">)</span>
+            <span class="o">.</span><span class="na">build</span><span class="o">();</span>
+    <span class="o">}</span>
+</code></pre></div></div>
+
+<p>chunk 단위 로깅</p>
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Slf4j</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">NewsChunkListener</span> <span class="kd">implements</span> <span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">batch</span><span class="o">.</span><span class="na">core</span><span class="o">.</span><span class="na">ChunkListener</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">beforeChunk</span><span class="o">(</span><span class="nc">ChunkContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterChunk</span><span class="o">(</span><span class="nc">ChunkContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">StepContext</span> <span class="n">stepContext</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getStepContext</span><span class="o">();</span>
+        <span class="nc">StepExecution</span> <span class="n">stepExecution</span> <span class="o">=</span> <span class="n">stepContext</span><span class="o">.</span><span class="na">getStepExecution</span><span class="o">();</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"##### after chunk read count:{}"</span><span class="o">,</span> <span class="n">stepExecution</span><span class="o">.</span><span class="na">getReadCount</span><span class="o">());</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"##### after chunk skip count:{}"</span><span class="o">,</span> <span class="n">stepExecution</span><span class="o">.</span><span class="na">getProcessSkipCount</span><span class="o">());</span>
+        <span class="n">log</span><span class="o">.</span><span class="na">info</span><span class="o">(</span><span class="s">"##### after chunk commit count:{}"</span><span class="o">,</span> <span class="n">stepExecution</span><span class="o">.</span><span class="na">getCommitCount</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">afterChunkError</span><span class="o">(</span><span class="nc">ChunkContext</span> <span class="n">context</span><span class="o">)</span> <span class="o">{</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+:ET

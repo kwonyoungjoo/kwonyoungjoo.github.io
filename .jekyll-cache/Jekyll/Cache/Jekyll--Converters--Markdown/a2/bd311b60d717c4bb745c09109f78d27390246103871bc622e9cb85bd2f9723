@@ -1,0 +1,61 @@
+I"Q<p>단어의 의미를 다차원 공간에 ‘벡터화’ 시킴으로 단어 사이에 유사도(의미론적)를 구할수 있다. 벡터화 된다는 것은 벡터연산을 통해 의미자체를 연산 할수 있다.
+단어를 벡터화 하는 방법은 이미 다양한 연구가 있었고 그중에 word2vec 에 대해 이미 아는듯 하지만 잘 알지 못하는 것을 다시 잘 알아보자</p>
+
+<h1 id="개념">개념</h1>
+
+<p>단어의 의미를 다차원 공간에 ‘벡터화’ 시킴으로 단어 사이에 유사도(의미론적)를 구할수 있다. 벡터화 된다는 것은 벡터연산을 통해 의미자체를 연산 할수 있다.</p>
+
+<p>단어를 벡터화 하는 방법은 이미 다양한 연구가 있었고 그중에 word2vec 에 대해 이미 아는듯 하지만 잘 알지 못하는 것을 다시 잘 알아보자</p>
+
+<p>왜 word embedding</p>
+
+<p>문자로 이루어진 단어를 특정차원의 벡토로 변환하는 단계. 같은 문자에 대해 벡터로 변환 할수 있다. word embedding이 필요한 이유는 학습이나 알고리즘등의 처리를 위해서는 모두 숫자로 변환 되어야 한다.</p>
+
+<p><strong>word embedding</strong> 방법은 크게 두가지로 분류 할수 있다.</p>
+
+<ol>
+  <li>Frequency based Embedding - BOW , Count Vector , TF-IDF Vector</li>
+  <li>Prediction based Vector - CBOW, Skip-gram, CNN, RNN …</li>
+</ol>
+
+<p>이하 우리가 알고자 하는 word2vec은 2013년 구글에서 발표된 모델로 CBOW와 SKip-gram을 구현한 라이브러리 Prediction based Vector 방법중에 하나이다.</p>
+
+<h2 id="cbow-모델">CBOW 모델</h2>
+
+<p>컨텍스트(주변단어)로부터 찾고자 하는 target를 predict 하는 모델이다.</p>
+
+<p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bad42f0a-ad54-4eb5-8369-54ed71ba0cb6/_2021-04-09__1.13.17.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/bad42f0a-ad54-4eb5-8369-54ed71ba0cb6/_2021-04-09__1.13.17.png" /></p>
+
+<p><strong>N</strong> - context count , <strong>V</strong> - 사전 크기</p>
+
+<p>학습에 필요한 matrix는 2개 이다.</p>
+
+<ul>
+  <li>Input Layer -&gt; Projection Layer (Hidden Layer) : input layer의 모든 단어들이 <strong>공통적</strong>으로 사용하는 V*N matrix</li>
+  <li>Projection Layer -&gt; Output Layer : projection된 각 단어 벡터들의 평균을 구해서 Weight Matrix를 곱한다</li>
+</ul>
+
+<h2 id="skip-gram모델">Skip-Gram모델</h2>
+
+<p>단어로부터 컨텍스트를 예측하는 방법</p>
+
+<p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9d3d8094-22ac-46c6-94d5-ea16f6d5e827/_2021-04-09__1.15.04.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/9d3d8094-22ac-46c6-94d5-ea16f6d5e827/_2021-04-09__1.15.04.png" /></p>
+
+<h2 id="complexity-reduction">Complexity Reduction</h2>
+
+<p>Notion을 사용하면 폴더를 사용하지 않고도 페이지 내에 페이지를 중첩할 수 있습니다.</p>
+
+<p>Output Layer에서 구현되는 SoftMax는 전체 사전의 단어를 계산해야 하기때문에 연산 비용이 높다. 이 연산을 줄이기 위한 방법이 Hierarchical softmax, negative sampling 등이 있다.</p>
+
+<p><strong>Hierarchial SoftMax</strong> multinomial distribution functiond을 사용해서 binary tree(ex Binary Huffman Tree)를 만들어서 단어의 확률를 계산할때 root -&gt; leaf로 탐색하면서 확률를 곱해주는 방식</p>
+
+<p><img src="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8eebc2b6-b7cf-46ea-ad23-a870841a2e82/_2021-04-09__1.15.52.png" alt="https://s3-us-west-2.amazonaws.com/secure.notion-static.com/8eebc2b6-b7cf-46ea-ad23-a870841a2e82/_2021-04-09__1.15.52.png" /></p>
+
+<p>hierarchial softmax를 사용하게 되면 Output Layer에서 W’matrix를 사용하지 않고 N(컨텍스트 길이)의 weight vector를 update 한다.</p>
+
+<p>Negative Sampling</p>
+
+<p>사전 전체를 softmax 하지 않고 sampling한 단어에 대해서 softmax연산을 한다. NxV -&gt; NxK(sample count) positive sample(target) + negative sample</p>
+
+<p>negative sampling방법은 실험적으로 정한다.</p>
+:ET

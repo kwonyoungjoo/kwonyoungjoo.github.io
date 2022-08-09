@@ -1,0 +1,207 @@
+I"lH<p>Airflow는 데이터 처리 일련의 과정을 스케쥴링하고 모니터링 및 관리를 편리하게 도와주는 프레임웍입니다.
+데이터수집 중 완료, 장애 발생등 일련의 과정을 DAG를 통해 분리하고 flow로 통해서 각 상황에 대처하도록 프그래밍이 가능합니다.</p>
+
+<p>설치</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export AIRFLOW_VERSION=2.3.2
+
+export PYTHON_VERSION="$(python --version | cut -d " " -f 2 | cut -d "." -f 1-2)"
+
+export CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+
+pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+</code></pre></div></div>
+
+<p>설정 파일 생성</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">airflow</span> <span class="n">info</span> <span class="o">-&gt;</span> <span class="n">airflow</span><span class="p">.</span><span class="n">cfg</span> <span class="n">파일이</span> <span class="n">생성됨</span> 
+</code></pre></div></div>
+
+<p>database 설정</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#airflow.cfg 
+</span><span class="n">sql_alchemy_conn</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">+</span><span class="n">mysqldb</span><span class="p">:</span><span class="o">//</span><span class="p">[</span><span class="n">아이디</span><span class="p">]:[</span><span class="n">비밀번호</span><span class="p">]</span><span class="o">@</span><span class="c1">#@[아이피]:[포트]/airflow_db?charset=utf8
+</span>
+<span class="c1"># SequentialExecutor은 sqllite 환경에서만 사용 가능 wjs
+</span><span class="n">executor</span> <span class="o">=</span> <span class="n">LocalExecutor</span>
+
+<span class="c1">#timezone 
+</span><span class="n">default_ui_timezone</span> <span class="o">=</span> <span class="n">Asia</span><span class="o">/</span><span class="n">Seoul</span>
+</code></pre></div></div>
+
+<p>airflow dag 파일 위치 지정</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#airflow.cfg 
+</span><span class="p">[</span><span class="n">core</span><span class="p">]</span>
+<span class="n">dags_folder</span> <span class="o">=</span> <span class="o">~/</span><span class="n">airflow</span><span class="o">/</span><span class="n">dags</span>
+
+<span class="c1">#example 로딩 안함 
+</span><span class="n">load_examples</span> <span class="o">=</span> <span class="bp">False</span> 
+</code></pre></div></div>
+
+<p>db 설정</p>
+
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">#</span> <span class="nx">데이터베이스</span> <span class="nx">생성</span> 
+<span class="nx">create</span> <span class="nx">database</span> <span class="nx">airflow</span> 
+
+<span class="err">#</span> <span class="nx">디비</span> <span class="nx">유저</span> <span class="nx">생성</span> 
+<span class="nx">create</span> <span class="nx">user</span> <span class="nx">airflow_user</span> <span class="kd">with</span> <span class="nx">password</span> <span class="dl">'</span><span class="s1">airflow_user_password</span><span class="dl">'</span>
+<span class="nx">grant</span> <span class="nx">all</span> <span class="nx">privileges</span> <span class="nx">on</span> <span class="nx">database</span> <span class="nx">airflow</span> <span class="nx">to</span> <span class="nx">airflow_user</span> 
+</code></pre></div></div>
+
+<p>airflow 실행</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">export</span> <span class="n">AIRFLOW_HOME</span><span class="o">=</span><span class="p">.</span><span class="o">/</span><span class="n">airflow</span>
+<span class="n">export</span> <span class="n">PYTHONPATH</span><span class="o">=</span> <span class="s">'dag source 위치'</span>
+
+<span class="c1"># airflow_home을 설정 해야 airflow.cfg파일을 읽어서 처리함 
+</span><span class="n">airflow</span> <span class="n">db</span> <span class="n">init</span> 
+
+<span class="c1"># web ui 유저 생성 
+</span><span class="n">airflow</span> <span class="n">users</span> <span class="n">create</span> <span class="o">--</span><span class="n">username</span> <span class="n">airflow</span> <span class="o">--</span><span class="n">firstname</span> <span class="n">airflow</span> <span class="o">--</span><span class="n">lastname</span> <span class="n">airflow</span> <span class="o">--</span><span class="n">role</span> <span class="n">Admin</span> <span class="o">--</span><span class="n">email</span> <span class="n">test</span><span class="o">@</span><span class="n">test</span><span class="p">.</span><span class="n">com</span>
+
+<span class="n">airflow</span> <span class="n">scheduler</span> 
+<span class="n">airflow</span> <span class="n">webserver</span> <span class="o">--</span><span class="n">port</span> <span class="mi">8080</span> 
+</code></pre></div></div>
+
+<p>airflow 종료</p>
+
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">cat</span> <span class="nx">$AIRFLOW_HOME</span><span class="o">/</span><span class="nx">airflow</span><span class="o">-</span><span class="nx">webserver</span><span class="p">.</span><span class="nx">pid</span> <span class="o">|</span> <span class="nx">xargs</span> <span class="nx">kill</span> <span class="o">-</span><span class="mi">9</span>
+<span class="nx">cat</span> <span class="o">/</span><span class="nx">dev</span><span class="o">/</span><span class="kc">null</span> <span class="o">&gt;</span>  <span class="nx">$AIRFLOW_HOME</span><span class="o">/</span><span class="nx">airflow</span><span class="o">-</span><span class="nx">webserver</span><span class="p">.</span><span class="nx">pid</span>
+</code></pre></div></div>
+
+<p>pythonOperatror 작성</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">job1</span><span class="p">():</span>
+        <span class="k">print</span><span class="p">(</span><span class="s">'start job'</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">'job return value'</span>
+
+<span class="n">t1</span> <span class="o">=</span> <span class="n">PythonOperator</span><span class="p">(</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s">'preprocess'</span><span class="p">,</span>
+        <span class="n">python_callable</span><span class="o">=</span><span class="n">job1</span><span class="p">,</span>
+        <span class="n">dag</span><span class="o">=</span><span class="n">dag</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">job2</span><span class="p">(</span><span class="o">**</span><span class="n">context</span><span class="p">):</span>
+	<span class="n">param</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="s">"params"</span><span class="p">][</span><span class="s">"key"</span><span class="p">]</span> 
+
+<span class="c1"># python 함수 호출 파라메터 전달 
+</span><span class="n">t1</span> <span class="o">=</span> <span class="n">PythonOperator</span><span class="p">(</span>
+        <span class="n">task_id</span><span class="o">=</span><span class="s">'function'</span><span class="p">,</span>
+				<span class="n">provide_context</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+				<span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s">'key'</span><span class="p">:</span> <span class="s">'test''}, 
+        python_callable=job2,
+        dag=dag,
+    )
+</span></code></pre></div></div>
+
+<p>전체코드</p>
+
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">from</span> <span class="nx">airflow</span> <span class="k">import</span> <span class="nx">DAG</span>
+<span class="k">from</span> <span class="nx">airflow</span><span class="p">.</span><span class="nx">operators</span><span class="p">.</span><span class="nx">python</span> <span class="k">import</span> <span class="nx">PythonOperator</span>
+<span class="k">import</span> <span class="nx">pendulum</span>
+
+<span class="err">#</span><span class="nx">airflow</span> <span class="nx">dags가</span> <span class="nx">pathonpath로</span> <span class="nx">잡히기</span> <span class="nx">떄문에</span> <span class="nx">해당</span> <span class="nx">디렉토리</span> <span class="nx">기준으로</span> <span class="nx">패키지명시</span> <span class="nx">해야됨</span> 
+<span class="k">from</span> <span class="nx">job</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">connect_user_report</span> <span class="k">import</span> <span class="nx">UserReport</span>
+<span class="k">from</span> <span class="nx">job</span><span class="p">.</span><span class="nx">user</span><span class="p">.</span><span class="nx">join_user_report</span> <span class="k">import</span> <span class="nx">JoinUserReport</span>
+
+<span class="nx">args</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="dl">'</span><span class="s1">depends_on_past</span><span class="dl">'</span><span class="p">:</span> <span class="nx">False</span><span class="p">,</span>
+        <span class="p">}</span>
+
+<span class="kd">with</span> <span class="nx">DAG</span><span class="p">(</span>
+    <span class="nx">dag_id</span><span class="o">=</span><span class="dl">'</span><span class="s1">main</span><span class="dl">'</span><span class="p">,</span>
+    <span class="nx">default_args</span><span class="o">=</span><span class="nx">args</span><span class="p">,</span>
+    <span class="nx">description</span><span class="o">=</span><span class="dl">'</span><span class="s1">Daily Report Create DAG</span><span class="dl">'</span><span class="p">,</span>
+    <span class="nx">schedule_interval</span><span class="o">=</span><span class="dl">"</span><span class="s2">@daily</span><span class="dl">"</span><span class="p">,</span>
+    <span class="nx">start_date</span><span class="o">=</span><span class="nx">pendulum</span><span class="p">.</span><span class="nx">datetime</span><span class="p">(</span><span class="mi">2021</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nx">tz</span><span class="o">=</span><span class="dl">"</span><span class="s2">UTC</span><span class="dl">"</span><span class="p">),</span>
+    <span class="nx">catchup</span><span class="o">=</span><span class="nx">False</span><span class="p">,</span>
+    <span class="nx">tags</span><span class="o">=</span><span class="p">[</span><span class="dl">'</span><span class="s1">daily-report</span><span class="dl">'</span><span class="p">],</span>
+<span class="p">)</span> <span class="k">as</span> <span class="nx">dag</span><span class="p">:</span>
+
+    <span class="nx">def</span> <span class="nx">start</span><span class="p">():</span>
+        <span class="nx">print</span><span class="p">(</span><span class="dl">"</span><span class="s2">start job</span><span class="dl">"</span><span class="p">)</span>
+
+    <span class="nx">def</span> <span class="nx">end</span><span class="p">():</span>
+        <span class="nx">print</span><span class="p">(</span><span class="dl">"</span><span class="s2">end job</span><span class="dl">"</span><span class="p">)</span>
+
+    <span class="nx">def</span> <span class="nx">user_connect_count_reporter</span><span class="p">():</span>
+        <span class="nx">user_report</span> <span class="o">=</span> <span class="nx">UserReport</span><span class="p">()</span>
+        <span class="nx">user_report</span><span class="p">.</span><span class="nx">run</span><span class="p">()</span>
+        <span class="nx">print</span><span class="p">(</span><span class="dl">"</span><span class="s2">end job1</span><span class="dl">"</span><span class="p">)</span>
+
+    <span class="nx">def</span> <span class="nx">user_join_count_reporter</span><span class="p">():</span>
+        <span class="nx">join_user_report</span> <span class="o">=</span> <span class="nx">JoinUserReport</span><span class="p">()</span>
+        <span class="nx">join_user_report</span><span class="p">.</span><span class="nx">run</span><span class="p">()</span>
+        <span class="nx">print</span><span class="p">(</span><span class="dl">"</span><span class="s2">end job1</span><span class="dl">"</span><span class="p">)</span>
+
+    <span class="nx">start_job</span> <span class="o">=</span> <span class="nx">PythonOperator</span><span class="p">(</span>
+        <span class="nx">task_id</span><span class="o">=</span><span class="dl">'</span><span class="s1">start</span><span class="dl">'</span><span class="p">,</span>
+        <span class="nx">provide_context</span><span class="o">=</span><span class="nx">True</span><span class="p">,</span>
+        <span class="nx">python_callable</span><span class="o">=</span><span class="nx">start</span><span class="p">,</span>
+        <span class="nx">dag</span><span class="o">=</span><span class="nx">dag</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="nx">connect_user_job</span> <span class="o">=</span> <span class="nx">PythonOperator</span><span class="p">(</span>
+        <span class="nx">task_id</span><span class="o">=</span><span class="dl">'</span><span class="s1">connect_user_job</span><span class="dl">'</span><span class="p">,</span>
+        <span class="nx">python_callable</span><span class="o">=</span><span class="nx">user_connect_count_reporter</span><span class="p">,</span>
+        <span class="nx">dag</span><span class="o">=</span><span class="nx">dag</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="nx">join_user_job</span> <span class="o">=</span> <span class="nx">PythonOperator</span><span class="p">(</span>
+        <span class="nx">task_id</span><span class="o">=</span><span class="dl">'</span><span class="s1">join_user_job</span><span class="dl">'</span><span class="p">,</span>
+        <span class="nx">python_callable</span><span class="o">=</span><span class="nx">user_join_count_reporter</span><span class="p">,</span>
+        <span class="nx">dag</span><span class="o">=</span><span class="nx">dag</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="nx">end_job</span> <span class="o">=</span> <span class="nx">PythonOperator</span><span class="p">(</span>
+        <span class="nx">task_id</span><span class="o">=</span><span class="dl">'</span><span class="s1">end</span><span class="dl">'</span><span class="p">,</span>
+        <span class="nx">provide_context</span><span class="o">=</span><span class="nx">True</span><span class="p">,</span>
+        <span class="nx">python_callable</span><span class="o">=</span><span class="nx">end</span><span class="p">,</span>
+        <span class="nx">dag</span><span class="o">=</span><span class="nx">dag</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="nx">start_job</span> <span class="o">&gt;&gt;</span> <span class="nx">connect_user_job</span> <span class="o">&gt;&gt;</span> <span class="nx">join_user_job</span> <span class="o">&gt;&gt;</span> <span class="nx">end_job</span>
+</code></pre></div></div>
+
+<p>설치중 문제점</p>
+
+<ul>
+  <li>mariadb연동 실패 airflow db init 중 오류 발생 
+마리아 디비는 공식적으로 지원하지 않는다 
+<a href="https://github.com/apache/airflow/discussions/15758">https://github.com/apache/airflow/discussions/15758</a> 관련 이슈</li>
+  <li>
+    <p>sqlite C library version too old (&lt; 3.15.0).</p>
+
+    <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  # sqlite 버전 업데이트 
+  wget https://www.sqlite.org/2021/sqlite-autoconf-3340100.tar.gz
+  tar xvf sqlite-autoconf-3340100.tar.gz
+  cd sqlite-autoconf-3340100
+  ./configure
+  make
+  sudo make install
+  export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+</code></pre></div>    </div>
+  </li>
+</ul>
+
+<p>airflow 유저  관리</p>
+
+<div class="language-jsx highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nx">airflow</span> <span class="nx">user</span> <span class="nx">list</span> 
+<span class="nx">airflow</span> <span class="nx">user</span> <span class="nx">create</span>
+<span class="nx">airflow</span> <span class="nx">user</span> <span class="k">delete</span> <span class="o">--</span><span class="nx">username</span> <span class="nx">XXX</span> 
+</code></pre></div></div>
+
+<p>API 사용하기</p>
+
+<div class="language-glsl highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp"># 현재 상태 조회 
+</span><span class="err">$</span> <span class="n">airflow</span> <span class="n">config</span> <span class="n">get</span><span class="o">-</span><span class="n">value</span> <span class="n">api</span> <span class="n">auth_backend</span>
+<span class="n">airflow</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">auth</span><span class="p">.</span><span class="n">backend</span><span class="p">.</span><span class="n">deny_all</span>
+
+<span class="err">$</span> <span class="n">airflow</span><span class="p">.</span><span class="n">cfg</span> <span class="err">설정</span> <span class="err">변경</span>
+<span class="n">auth_backend</span> <span class="o">=</span> <span class="n">airflow</span><span class="p">.</span><span class="n">api</span><span class="p">.</span><span class="n">auth</span><span class="p">.</span><span class="n">backend</span><span class="p">.</span><span class="n">basic_auth</span>
+
+<span class="err">$</span> <span class="n">curl</span> <span class="o">-</span><span class="n">X</span> <span class="n">GET</span> <span class="o">--</span><span class="n">user</span> <span class="s">"test:yrdy"</span> <span class="n">http</span><span class="o">:</span><span class="c1">//127.0.1:8080/api/v1/dags/dagRuns</span>
+
+</code></pre></div></div>
+:ET
