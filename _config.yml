@@ -2,8 +2,8 @@ title:              Sami Blog
 email:              justdoit1978@gmail.com
 description:        A Blog Theme by Start Bootstrap
 author:             Start Bootstrap
-baseurl:            "/kwonyoungjoo.github.io"
-url:                "https://startbootstrap.github.io"
+baseurl:            ""
+url:                "https://kwonyoungjoo.github.io"
 
 # Build settings
 markdown:           kramdown
