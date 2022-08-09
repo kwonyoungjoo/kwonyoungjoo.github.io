@@ -74,3 +74,10 @@ img::-moz-selection {
     color: $white;
     background: transparent;
 }
+
+pre.highlight {
+  background: #343434;
+  color: #aab1bf;
+  font-family: 'D2 coding', "Consolas", monospace;
+  padding: 5px;
+}

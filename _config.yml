@@ -1,13 +1,13 @@
-title:              Sami Blog
+title:              sami blog
 email:              justdoit1978@gmail.com
-description:        A Blog Theme by Start Bootstrap
-author:             Start Bootstrap
+description:        "^^ ^ㅠ^ ^0^ ^^; ^^b ^-^"
+author:             sami
 baseurl:            ""
 url:                "https://kwonyoungjoo.github.io"
 
 # Build settings
 markdown:           kramdown
-paginate:           5
+paginate:           8
 paginate_path:      "/posts/page:num/"
 plugins:
   - jekyll-feed
