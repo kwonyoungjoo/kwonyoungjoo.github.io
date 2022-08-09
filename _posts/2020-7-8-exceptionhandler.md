@@ -5,15 +5,14 @@ title:  SpringBoot ExceptionHandling
 springboot에서 오류발생시 처리 하는 방법을 알아본다.  
 
 java exception hierarchy
-<img class="img-fluid" src="https://ap-northeast-2-02850030-view.menlosecurity.com/c/0/i/aHR0cHM6Ly93d3cuYmVuY2hyZXNvdXJjZXMubmV0L3dwLWNvbnRlbnQvdXBsb2Fkcy8yMDE3LzAyL2V4Y2VwdGlvbi1oaWVyYXJjaHktaW4tamF2YS5wbmc~" alt="exception">
+<img class="img-fluid" src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fdata-flair.training%2Fblogs%2Fwp-content%2Fuploads%2Fsites%2F2%2F2018%2F04%2Fhierarchy-of-java-exceptions.webp&imgrefurl=https%3A%2F%2Fdata-flair.training%2Fblogs%2Fjava-exception%2F&tbnid=DLbiv6my_V275M&vet=12ahUKEwiMraa3p7n5AhVTAKYKHRMNCMsQMygMegUIARDXAQ..i&docid=dkn4Sla2KcLwdM&w=1440&h=691&q=exception-hierarchy-in-java&ved=2ahUKEwiMraa3p7n5AhVTAKYKHRMNCMsQMygMegUIARDXAQ" alt="exception">
 
 ### BasicErrorControll
 
-스프링 부트 기본 에러처리 컨트롤러
-
+<p>스프링 부트 기본 에러처리 컨트롤러
 application.properties에 정의된 기본설정(server.error)에 따라 응답 처리
-
 오류 응답시 출력되는 정보 제어
+</p>
 
 ```java
 @Component
@@ -33,11 +32,12 @@ public class UnhandledExceptionAttributes extends DefaultErrorAttributes {
 } 
 ```
 
-애플리케이션에서 발생하는 모든 에러 프로젝트 공통 포멧으로 정의 가능
+<p>애플리케이션에서 발생하는 모든 에러 프로젝트 공통 포멧으로 정의 가능</p>
 
 ### ExceptionHandler
-
+<p>
 Controller, RestController에서 발생되는 모든 예외를 처리 한다. 컨트롤러 별로 실행되기 떄문에 모든 컨트롤러에 정의 해줘야 한다.
+</p>
 
 ```java
 @RestController
@@ -55,10 +55,10 @@ public class testConotroller {
 ```
 
 ### ControllerAdvice
-
+<p>
 각 컨트롤러별로 예외처리를 하는게 아니라 컨트롤러 전체의 예외처리를 하는  annotation
-
 filter에서 오류 발생시 해당 advice에서 처리되지 않는다.
+</p>
 
 ```java
 @RestControllerAdvice
@@ -107,7 +107,7 @@ public class ExceptionHandler{
 
 ```
 
-Parameter Validate
+<p>Parameter Validate</p>
 
 ```java
 @PostMapping("/latency")
