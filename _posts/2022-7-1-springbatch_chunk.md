@@ -2,8 +2,8 @@
 layout: post
 title:  springbatch - chunk 단위 실행 
 ---
-springbatch를 이용해서 데이터를 처리할때 데이터 사이즈가 큰경우 task 단위가 아닌 chunk를 이용해서 
-데이터를 작은 사이즈로 read-process-write 를 반복적으로 처리에 견고하고 재처리 가능한 시스템으로 만들어 본다.
+<p>springbatch를 이용해서 데이터를 처리할때 데이터 사이즈가 큰경우 task 단위가 아닌 chunk를 이용해서 
+데이터를 작은 사이즈로 read-process-write 를 반복적으로 처리에 견고하고 재처리 가능한 시스템으로 만들어 본다.</p>
 
 
 ```java
