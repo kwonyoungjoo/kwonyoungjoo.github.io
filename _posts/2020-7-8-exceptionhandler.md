@@ -11,7 +11,7 @@ java exception hierarchy
 
 <p>스프링 부트 기본 에러처리 컨트롤러
 application.properties에 정의된 기본설정(server.error)에 따라 응답 처리
-오류 응답시 출력되는 정보 제어
+오류 응답시 출력되는 정보 제어 한다.
 </p>
 
 ```java
@@ -24,7 +24,7 @@ public class UnhandledExceptionAttributes extends DefaultErrorAttributes {
     Map<String, Object> errorAttributes = super.getErrorAttributes(webRequest, includeStackTrace);
 
 		// 아래와 같이 다양한 오류를 추가 할수 있음 
-    if((Integer)errorAttributes.get("status") == 404){
+    if(errorAttributes.get("status") == 404){
 	    errorAttributes.put("NOT FOUND" , String.format("[PATH] %s", errorAttributes.get("path")));
 		}
 
@@ -64,23 +64,23 @@ filter에서 오류 발생시 해당 advice에서 처리되지 않는다.
 @RestControllerAdvice
 public class ExceptionHandler{
 
-  @AllArgsConstructor
-  static class BindErrInfo {
+    @AllArgsConstructor
+    static class BindErrInfo {
       public String WHERE;
       public String FIELD;
       public Object INPUT;
       public String CAUSE;
-  }
+    }
 
-	@ExceptionHandler(customException.class)
-	public String customException(){
+    @ExceptionHandler(customException.class)
+    public String customException(){
     // exception 발생시 response body 출력 
     return commonExceptionResponse;
-	}
+    }
 
   // DTO @Valid 바인딩 오류 처리 
 	@ExceptionHandler(BindException.class)
-  public Res handleHttpRequestBindException(BindException e) {
+    public Res handleHttpRequestBindException(BindException e) {
       ExceptionLogger.log(e);
 
       Res apiRes = res.error(ERR_INVALID_INPUT, "DTO 바인딩 오류");
@@ -93,21 +93,21 @@ public class ExceptionHandler{
 
       res.putErrorData("BIND_ERROR_DETAILS", bindErrInfoList);
       return res;
-  }
+    }
   
-  // @Validated 에 의한 오류 처리
-  @ExceptionHandler(ConstraintViolationException.class)
+    // @Validated 에 의한 오류 처리
+    @ExceptionHandler(ConstraintViolationException.class)
 
 	// required 파라미터가 없는 경우 오류 처리
-  @ExceptionHandler(MissingServletRequestParameterException.class)	
+    @ExceptionHandler(MissingServletRequestParameterException.class)	
 
-  // RequestParameter @Vaild 오류 처리
-  @ExceptionHandler(MethodArgumentNotValidException.class)
+    // RequestParameter @Vaild 오류 처리
+    @ExceptionHandler(MethodArgumentNotValidException.class)
 } 
 
 ```
 
-<p>Parameter Validate</p>
+<p>Parameter Validate Check</p>
 
 ```java
 @PostMapping("/latency")
@@ -117,7 +117,7 @@ public ApiRes latencyLog(@Valid @RequestBody LatencyReq logs) {
 
 public class LatencyReq {
    @NotNull 
-	 private String data;
+   private String data;
 } 
 
 // null 입력시 MethodArgumentNotValidException 발생 
