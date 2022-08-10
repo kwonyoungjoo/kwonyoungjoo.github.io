@@ -48,9 +48,9 @@ ES에 파일을 저장할때는 템플릿을 정의하여 index를 자동으로 
 템플릿을 저장할때는 저장타입을 명시하여 검색용 필드와 exact매칭 필드를 분리하여 사용한다.
 
 ### 로그 활용
-Grafana Dashboard를 이용하여 모니터링 구현
-서비스 대시보드 : request count, response count, 메뉴별 집계, 클릭 발생 항목
-시스템 대시보드 : CPU 로드 상태, 메모리 상태, 디스크 사용량
++ Grafana Dashboard를 이용하여 모니터링 구현
++ 서비스 대시보드 : request count, response count, 메뉴별 집계, 클릭 발생 항목
++ 시스템 대시보드 : CPU 로드 상태, 메모리 상태, 디스크 사용량
 
 ### 로그 레벨 동적 변경 1
 logback-spring.xml에 scan 설정 넣으면 설정변경시 application restart됨 내가 원하는 동작이 아님
