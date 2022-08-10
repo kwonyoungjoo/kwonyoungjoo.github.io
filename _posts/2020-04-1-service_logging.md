@@ -54,7 +54,7 @@ title: 서비스로그 설계
 + 시스템 대시보드 : CPU 로드 상태, 메모리 상태, 디스크 사용량
 
 ### 로그 레벨 동적 변경 1
-logback-spring.xml에 scan 설정 넣으면 설정변경시 application restart됨 내가 원하는 동작이 아님
+logback-spring.xml에 scan 설정 넣으면 설정변경시 application 재시작 없어 로그 설정 변경 
 
 ```java
 <configuration scan="true">
