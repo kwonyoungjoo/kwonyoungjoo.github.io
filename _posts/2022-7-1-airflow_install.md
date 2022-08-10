@@ -101,8 +101,8 @@ def job2(**context):
 # python 함수 호출 파라메터 전달 
 t1 = PythonOperator(
         task_id='function',
-				provide_context=True,
-				params={'key': 'test''}, 
+		provide_context=True,
+        params={'key': 'test''}, 
         python_callable=job2,
         dag=dag,
     )
