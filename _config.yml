@@ -5,6 +5,10 @@ author:             sami
 baseurl:            ""
 url:                "https://kwonyoungjoo.github.io"
 
+# Setting site 
+future : true
+published : true 
+
 # Build settings
 markdown:           kramdown
 paginate:           8
