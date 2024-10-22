@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  postgresql 15분 리뷰
+title:  postgresql 15분 리뷰 
 ---
 
 
