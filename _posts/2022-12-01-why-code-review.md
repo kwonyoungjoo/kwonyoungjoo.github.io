@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  prophet 모델을 활용한 시계열 데이터 예측 
+title:  Why Code Review? 
 ---
 
 코드리뷰에 대한 전반적인 이해를 높여 봅시다. 
