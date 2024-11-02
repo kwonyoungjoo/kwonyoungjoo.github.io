@@ -91,10 +91,10 @@ title:  추천시스템 개요
   * 내용기반 필터링과 협업 필터링을 결합하여 사용 
 
 ### 유사도 계산
-<img src="/assets/rc6.png" width="60%" height="90%" />
+<img src="/assets/rc6.png" width="90%" height="90%" />
 
 ### 추천 알고리즘 비교
-<img src="/assets/rc8.png" width="80%" height="90%"/>
+<img src="/assets/rc8.png" width="90%" height="90%"/>
 
 ### 평가지표 
-<img src="/assets/rc6.png" width="89%" height="90%"/>
+<img src="/assets/rc6.png" width="90%" height="90%"/>
