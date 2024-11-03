@@ -11,7 +11,7 @@ title:  추천시스템 개요
 * 입력
   * 입력 데이터 종류  
     * contents :  가격, 위치, 외형, 룸타입, 이용시간 등등
-      * interaction : 리뷰, 찜, 구매, 예약 등등
+    * interaction : 리뷰, 찜, 구매, 예약 등등
 * 프로세싱
   * 개요추천 (개인화 없음)
     * 예 - 신규아이템순, 가격순, 인기순 등등  
@@ -97,4 +97,4 @@ title:  추천시스템 개요
 <img src="/assets/rc8.png" width="90%" height="90%"/>
 
 ### 평가지표 
-<img src="/assets/rc6.png" width="90%" height="90%"/>
+<img src="/assets/rc7.png" width="90%" height="90%"/>
