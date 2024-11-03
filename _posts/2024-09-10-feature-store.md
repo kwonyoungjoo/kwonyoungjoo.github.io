@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  FeatureStore 흉내내기  
+title:  FeatureStore 흉내내기(작성중)  
 ---
 
 # FeatureStore 흉내내기
@@ -33,7 +33,7 @@ title:  FeatureStore 흉내내기
   * 데이터 품질 보장: 모델 학습 및 서빙에서 동일한 피처를 사용하여 일관성 유지.
   * 확장성: 많은 데이터와 모델을 처리하는 대규모 시스템에서 확장 가능.
 
-
+.... 작성중 
 
 
 
