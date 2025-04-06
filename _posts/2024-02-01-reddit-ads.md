@@ -6,9 +6,9 @@ title:  FeatureStore 흉내내기(작성중)
 # Reddit Dynamic Product Ads 리뷰
 ## Reddit Dynamic Product Ads 리뷰  
 
-https://www.reddit.com/r/RedditEng/comments/1gug4x9/product_candidate_generation_for_reddit_dynamic/?rdt=41426 
-
-**광고 목표 : right product, right person, right time on Reddit** 
+레딧의 광고 시스템을 알아보고 우리가 적용 할만한 것들이 있는지 살펴보자.
+** 레딧의 광고 목표 : right product, right person, right time on Reddit**
+참고 링크 : https://www.reddit.com/r/RedditEng/comments/1gug4x9/product_candidate_generation_for_reddit_dynamic/?rdt=41426 
 
 광고 타케팅 예시 - 곱슬머리에 대한 정보를 찾는 검색이 있으면 헤어 제품을 광고로 내보낸다.
 
