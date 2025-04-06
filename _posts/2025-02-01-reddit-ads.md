@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  FeatureStore 흉내내기(작성중)  
+title:  Reddit Dynamic Product Ads 리뷰  
 ---
 
 # Reddit Dynamic Product Ads 리뷰
