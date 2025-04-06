@@ -1,3 +1,11 @@
+---
+layout: post
+title:  FeatureStore 흉내내기(작성중)  
+---
+
+# Reddit Dynamic Product Ads 리뷰
+## Reddit Dynamic Product Ads 리뷰  
+
 https://www.reddit.com/r/RedditEng/comments/1gug4x9/product_candidate_generation_for_reddit_dynamic/?rdt=41426 
 
 **광고 목표 : right product, right person, right time on Reddit** 
